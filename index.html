@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monster Survivors | Explorer.monster</title>
+    <meta name="description" content="Survive the monster invasion by strategically stacking and clearing blocks in this addictive puzzle adventure.">
+    <link rel="canonical" href="https://explorer.monster/">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👾</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'apple-blue': '#0071e3',
+                        'apple-light': '#f5f5f7',
+                        'apple-dark': '#1d1d1f',
+                        'apple-gray': '#86868b',
+                        'apple-green': '#34c759',
+                        'apple-purple': '#af52de'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #f5f7ff 0%, #f0f2fa 100%);
+            color: #1d1d1f;
+            scroll-behavior: smooth;
+        }
+        
+        .header-gradient {
+            background: linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%);
+        }
+        
+        .game-card {
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+            border-radius: 18px;
+            overflow: hidden;
+            background: white;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .hex-pattern {
+            background-color: #eef2ff;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(175, 82, 222, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 80% 80%, rgba(52, 199, 89, 0.1) 0%, transparent 20%);
+        }
+        
+        .iframe-container {
+            position: relative;
+            padding-bottom: 70%; /* Aspect ratio for iframe */
+            height: 0;
+            overflow: hidden;
+            border-radius: 16px;
+            box-shadow: 0 15px 50px -12px rgba(0, 0, 0, 0.25);
+            background: #1d1d1f;
+        }
+        
+        .iframe-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .footer-link {
+            transition: all 0.3s ease;
+            color: #86868b;
+        }
+        
+        .footer-link:hover {
+            color: #0071e3;
+            transform: translateX(3px);
+        }
+        
+        @media (max-width: 768px) {
+            .iframe-container {
+                padding-bottom: 100%;
+            }
+            
+            .mobile-stack {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="header-gradient text-white py-6 px-4 md:px-8">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center mb-4 md:mb-0">
+                <div class="w-12 h-12 rounded-xl bg-apple-purple flex items-center justify-center mr-4">
+                    <i class="fas fa-dragon text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold">Monster Survivors</h1>
+                    <p class="text-apple-gray mt-1">Survive the monster invasion by strategically stacking and clearing blocks</p>
+                </div>
+            </div>
+            
+            <div class="flex space-x-3">
+                <a href="#game" class="px-6 py-2 bg-apple-blue hover:bg-blue-600 rounded-full font-medium transition-colors">Play Now</a>
+                <a href="#features" class="px-6 py-2 border border-white hover:bg-white hover:text-black rounded-full font-medium transition-colors">Learn More</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="py-16 md:py-24 px-4 hex-pattern">
+        <div class="container mx-auto max-w-6xl">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-12 md:mb-0 text-center md:text-left">
+                    <span class="bg-black text-white px-4 py-1 rounded-full text-sm font-medium">New Update Available</span>
+                    <h2 class="text-4xl md:text-5xl font-bold mt-6 mb-4">Survive the Monster Invasion</h2>
+                    <p class="text-xl text-apple-gray mb-8 max-w-2xl">
+                        Monster Survivors combines classic block-stacking gameplay with monster-battling strategy. 
+                        Clear blocks to defeat monsters and survive as long as possible in this addictive puzzle adventure!
+                    </p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 justify-center md:justify-start">
+                        <a href="#game" class="px-8 py-4 bg-apple-blue hover:bg-blue-600 text-white rounded-xl font-bold text-lg flex items-center justify-center pulse">
+                            <i class="fas fa-play mr-3"></i> Play Free Now
+                        </a>
+                        <a href="#features" class="px-8 py-4 bg-white hover:bg-gray-100 text-black rounded-xl font-bold text-lg flex items-center justify-center border border-gray-200">
+                            <i class="fas fa-info-circle mr-3"></i> Learn More
+                        </a>
+                    </div>
+                    
+                    <div class="mt-12 flex flex-wrap justify-center md:justify-start gap-4">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-apple-green flex items-center justify-center">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <span class="ml-3 font-medium">Mobile Friendly</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-apple-purple flex items-center justify-center">
+                                <i class="fas fa-sync-alt"></i>
+                            </div>
+                            <span class="ml-3 font-medium">Progress Sync</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-apple-blue flex items-center justify-center">
+                                <i class="fas fa-gamepad"></i>
+                            </div>
+                            <span class="ml-3 font-medium">3 Game Modes</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="md:w-1/2 flex justify-center">
+                    <div class="relative">
+                        <div class="game-card w-80 h-80 overflow-hidden">
+                            <div class="bg-gray-800 h-full flex items-center justify-center">
+                                <div class="grid grid-cols-4 gap-2 p-4">
+                                    <div class="w-12 h-12 bg-red-500 rounded"></div>
+                                    <div class="w-12 h-12 bg-green-500 rounded"></div>
+                                    <div class="w-12 h-12 bg-purple-500 rounded"></div>
+                                    <div class="w-12 h-12 bg-red-500 rounded"></div>
+                                    <div class="w-12 h-12 bg-yellow-500 rounded"></div>
+                                    <div class="w-12 h-12 bg-blue-500 rounded"></div>
+                                    <div class="w-12 h-12 bg-green-500 rounded"></div>
+                                    <div class="w-12 h-12 bg-purple-500 rounded"></div>
+                                    <div class="w-12 h-12 bg-blue-500 rounded"></div>
+                                    <div class="w-12 h-12 bg-red-500 rounded"></div>
+                                    <div class="w-12 h-12 bg-yellow-500 rounded"></div>
+                                    <div class="w-12 h-12 bg-blue-500 rounded"></div>
+                                    <div class="w-12 h-12 bg-green-500 rounded"></div>
+                                    <div class="w-12 h-12 bg-purple-500 rounded"></div>
+                                    <div class="w-12 h-12 bg-yellow-500 rounded"></div>
+                                    <div class="w-12 h-12 bg-red-500 rounded"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="absolute -bottom-6 -right-6 bg-white rounded-xl shadow-lg p-4 border border-gray-200">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-apple-purple rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-skull text-white text-xl"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <div class="font-bold">Monster Battle</div>
+                                    <div class="text-sm text-apple-gray">Defeat monsters by clearing rows</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Game Embed Section -->
+    <section id="game" class="py-16 bg-apple-light px-4">
+        <div class="container mx-auto max-w-6xl">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Play Monster Survivors Now</h2>
+                <p class="text-lg text-apple-gray max-w-2xl mx-auto">
+                    Experience the addictive gameplay that combines classic block-stacking with monster survival strategy. 
+                    Clear blocks to attack monsters and survive as long as possible!
+                </p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="iframe-container">
+                    <!-- Hextris游戏嵌入 -->
+                    <iframe src="https://hextris.io/" title="Monster Survivors Game" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                
+                <div class="mt-8 text-center">
+                    <p class="text-apple-gray">
+                        <i class="fas fa-info-circle mr-2"></i> 
+                        Game controls: Use ← → arrow keys to rotate blocks, ↓ to speed up
+                    </p>
+                    <div class="mt-6 flex flex-wrap justify-center gap-4">
+                        <div class="flex items-center bg-white py-2 px-4 rounded-lg border border-gray-200">
+                            <div class="w-8 h-8 bg-apple-blue rounded flex items-center justify-center">
+                                <i class="fas fa-arrow-left text-white"></i>
+                            </div>
+                            <span class="ml-2 font-medium">Rotate Left</span>
+                        </div>
+                        <div class="flex items-center bg-white py-2 px-4 rounded-lg border border-gray-200">
+                            <div class="w-8 h-8 bg-apple-blue rounded flex items-center justify-center">
+                                <i class="fas fa-arrow-right text-white"></i>
+                            </div>
+                            <span class="ml-2 font-medium">Rotate Right</span>
+                        </div>
+                        <div class="flex items-center bg-white py-2 px-4 rounded-lg border border-gray-200">
+                            <div class="w-8 h-8 bg-apple-blue rounded flex items-center justify-center">
+                                <i class="fas fa-arrow-down text-white"></i>
+                            </div>
+                            <span class="ml-2 font-medium">Speed Up</span>
+                        </div>
+                        <div class="flex items-center bg-white py-2 px-4 rounded-lg border border-gray-200">
+                            <div class="w-8 h-8 bg-apple-green rounded flex items-center justify-center">
+                                <i class="fas fa-space-shuttle text-white"></i>
+                            </div>
+                            <span class="ml-2 font-medium">Space to Drop</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 px-4">
+        <div class="container mx-auto max-w-6xl">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Game Features</h2>
+                <p class="text-lg text-apple-gray max-w-2xl mx-auto">
+                    Monster Survivors offers an innovative twist on classic puzzle gameplay with unique features 
+                    that keep players engaged and challenged
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="game-card p-8">
+                    <div class="feature-icon bg-blue-100 text-apple-blue">
+                        <i class="fas fa-monster text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Monster Battles</h3>
+                    <p class="text-apple-gray mb-4">
+                        Each cleared row damages monsters approaching your base. Strategically clear blocks to defeat monsters before they reach you!
+                    </p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="bg-blue-100 text-apple-blue px-3 py-1 rounded-full text-sm">Strategy</span>
+                        <span class="bg-purple-100 text-apple-purple px-3 py-1 rounded-full text-sm">Combat</span>
+                    </div>
+                </div>
+                
+                <div class="game-card p-8">
+                    <div class="feature-icon bg-purple-100 text-apple-purple">
+                        <i class="fas fa-sync-alt text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Hexagonal Blocks</h3>
+                    <p class="text-apple-gray mb-4">
+                        Experience a fresh take on classic gameplay with innovative hexagonal blocks that rotate in six directions.
+                    </p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="bg-purple-100 text-apple-purple px-3 py-1 rounded-full text-sm">Innovative</span>
+                        <span class="bg-green-100 text-apple-green px-3 py-1 rounded-full text-sm">Challenging</span>
+                    </div>
+                </div>
+                
+                <div class="game-card p-8">
+                    <div class="feature-icon bg-green-100 text-apple-green">
+                        <i class="fas fa-trophy text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Progression System</h3>
+                    <p class="text-apple-gray mb-4">
+                        Unlock new monsters, block types, and special abilities as you level up. Compete with friends on the leaderboards!
+                    </p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="bg-green-100 text-apple-green px-3 py-1 rounded-full text-sm">Rewards</span>
+                        <span class="bg-blue-100 text-apple-blue px-3 py-1 rounded-full text-sm">Multiplayer</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Game Info Section -->
+    <section class="py-16 bg-apple-light px-4">
+        <div class="container mx-auto max-w-6xl">
+            <div class="flex flex-col md:flex-row items-center mobile-stack">
+                <div class="md:w-1/2 mb-12 md:mb-0">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">About Monster Survivors</h2>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-xl font-bold mb-2 flex items-center">
+                                <div class="w-8 h-8 bg-apple-blue rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-history text-white"></i>
+                                </div>
+                                Game Origins
+                            </h3>
+                            <p class="text-apple-gray">
+                                Monster Survivors was inspired by classic block-stacking games but adds a unique survival twist. 
+                                The game was developed by a small team of indie developers passionate about creating innovative puzzle experiences.
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-xl font-bold mb-2 flex items-center">
+                                <div class="w-8 h-8 bg-apple-purple rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-gamepad text-white"></i>
+                                </div>
+                                Gameplay Mechanics
+                            </h3>
+                            <p class="text-apple-gray">
+                                Players must strategically rotate and position falling hexagonal blocks to create complete rows. 
+                                Each cleared row damages approaching monsters. The game features three distinct modes: Survival, 
+                                Campaign, and Endless Challenge.
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-xl font-bold mb-2 flex items-center">
+                                <div class="w-8 h-8 bg-apple-green rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-mobile-alt text-white"></i>
+                                </div>
+                                Mobile Experience
+                            </h3>
+                            <p class="text-apple-gray">
+                                Designed specifically for both desktop and mobile devices, Monster Survivors offers a seamless 
+                                experience across all platforms. Your progress syncs automatically so you can play anywhere.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <a href="#game" class="mt-8 inline-flex items-center px-6 py-3 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-play mr-3"></i> Start Playing Now
+                    </a>
+                </div>
+                
+                <div class="md:w-1/2 pl-0 md:pl-12">
+                    <div class="bg-white rounded-2xl overflow-hidden shadow-xl">
+                        <div class="p-6 border-b border-gray-200">
+                            <h3 class="font-bold text-lg">Game Statistics</h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between mb-6 pb-6 border-b border-gray-100">
+                                <div>
+                                    <div class="text-3xl font-bold">4.8M+</div>
+                                    <div class="text-apple-gray">Players Worldwide</div>
+                                </div>
+                                <div>
+                                    <div class="text-3xl font-bold">97%</div>
+                                    <div class="text-apple-gray">Positive Reviews</div>
+                                </div>
+                            </div>
+                            
+                            <h4 class="font-bold mb-4">Top Players This Week</h4>
+                            <div class="space-y-4">
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-800 font-bold">
+                                        1
+                                    </div>
+                                    <div class="ml-4 flex-1">
+                                        <div class="font-medium">MonsterSlayer22</div>
+                                        <div class="text-sm text-apple-gray">Level 87 | 245,600 points</div>
+                                    </div>
+                                    <div class="bg-green-100 text-apple-green px-3 py-1 rounded-full text-sm font-medium">
+                                        +12,340
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-800 font-bold">
+                                        2
+                                    </div>
+                                    <div class="ml-4 flex-1">
+                                        <div class="font-medium">HexMaster</div>
+                                        <div class="text-sm text-apple-gray">Level 85 | 238,200 points</div>
+                                    </div>
+                                    <div class="bg-green-100 text-apple-green px-3 py-1 rounded-full text-sm font-medium">
+                                        +9,870
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-800 font-bold">
+                                        3
+                                    </div>
+                                    <div class="ml-4 flex-1">
+                                        <div class="font-medium">BlockNinja</div>
+                                        <div class="text-sm text-apple-gray">Level 83 | 228,450 points</div>
+                                    </div>
+                                    <div class="bg-green-100 text-apple-green px-3 py-1 rounded-full text-sm font-medium">
+                                        +8,650
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <a href="#game" class="mt-6 block text-center py-3 border border-gray-200 rounded-lg font-medium hover:bg-gray-50 transition-colors">
+                                Join the Leaderboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 bg-apple-dark text-gray-400 px-4">
+        <div class="container mx-auto max-w-6xl">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-6">
+                        <div class="w-10 h-10 rounded-lg bg-apple-purple flex items-center justify-center mr-3">
+                            <i class="fas fa-dragon text-white"></i>
+                        </div>
+                        <span class="text-xl font-bold text-white">Monster Survivors</span>
+                    </div>
+                    <p class="mb-6">
+                        An innovative puzzle survival game combining block-stacking strategy with monster battles.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-white font-bold mb-6">Explore</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#game" class="footer-link flex items-center"><i class="fas fa-chevron-right mr-2 text-sm"></i> Play Game</a></li>
+                        <li><a href="#features" class="footer-link flex items-center"><i class="fas fa-chevron-right mr-2 text-sm"></i> Features</a></li>
+                        <li><a href="#" class="footer-link flex items-center"><i class="fas fa-chevron-right mr-2 text-sm"></i> Leaderboards</a></li>
+                        <li><a href="#" class="footer-link flex items-center"><i class="fas fa-chevron-right mr:2 text-sm"></i> Community</a></li>
+                        <li><a href="#" class="footer-link flex items-center"><i class="fas fa-chevron-right mr-2 text-sm"></i> Support</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-white font-bold mb-6">Resources</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="footer-link flex items-center"><i class="fas fa-chevron-right mr-2 text-sm"></i> Game Guide</a></li>
+                        <li><a href="#" class="footer-link flex items-center"><i class="fas fa-chevron-right mr-2 text-sm"></i> Developer Blog</a></li>
+                        <li><a href="#" class="footer-link flex items-center"><i class="fas fa-chevron-right mr-2 text-sm"></i> Press Kit</a></li>
+                        <li><a href="#" class="footer-link flex items-center"><i class="fas fa-chevron-right mr-2 text-sm"></i> FAQ</a></li>
+                        <li><a href="#" class="footer-link flex items-center"><i class="fas fa-chevron-right mr-2 text-sm"></i> Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-white font-bold mb-6">Legal</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="footer-link flex items-center"><i class="fas fa-chevron-right mr-2 text-sm"></i> Terms of Service</a></li>
+                        <li><a href="#" class="footer-link flex items-center"><i class="fas fa-chevron-right mr-2 text-sm"></i> Privacy Policy</a></li>
+                        <li><a href="#" class="footer-link flex items-center"><i class="fas fa-chevron-right mr-2 text-sm"></i> Cookie Policy</a></li>
+                        <li><a href="#" class="footer-link flex items-center"><i class="fas fa-chevron-right mr-2 text-sm"></i> Copyright</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-sm">
+                <p>© 2025 Explorer.monster. All rights reserved. Monster Survivors is a trademark of Explorer.monster.</p>
+                <p class="mt-2">This site is not affiliated with Hextris or its developers. Game embedded for demonstration purposes only.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
